@@ -42,7 +42,7 @@ long lastMeasure = 0;
 
 // This functions connects your ESP8266 to your router
 void setup_wifi() {
-  delay(2000);
+  delay(1000);
   // We start by connecting to a WiFi network
   Serial.println();
   Serial.print("Connecting to ");
