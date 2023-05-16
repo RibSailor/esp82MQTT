@@ -3,20 +3,22 @@
 #include <Wire.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <ESPAsyncWebServer.h>
+#include <AsyncElegantOTA.h>
 
 
 // Change the credentials below, so your ESP8266 connects to your router
 const char* ssid = "ORBI20";
 const char* password = "smoothwater684";
 String newHostname = "ESP8266Node";
-
+AsyncWebServer server(80);
 // MQTT broker credentials (set to NULL if not required)
 const char* MQTT_username = NULL; 
 const char* MQTT_password = NULL; 
 
 // Change the variable to your Raspberry Pi IP address, so it connects to your MQTT broker
-const char* mqtt_server = "192.168.1.150";
-
+// const char* mqtt_server = "192.168.1.150";
+const char* mqtt_server = "breandown.local";
 
 // Initializes the espClient. You should change the espClient name if you have multiple ESPs running in your home automation system
 WiFiClient espClient;
@@ -137,6 +139,13 @@ void setup() {
   
   Serial.begin(9600);
   setup_wifi();
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(200, "text/plain", "Hi! I am ESP82MQTT OTA.");
+  });
+  AsyncElegantOTA.begin(&server);    // Start ElegantOTA
+  server.begin();
+  Serial.println("HTTP server started for OTA");
+
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
 
